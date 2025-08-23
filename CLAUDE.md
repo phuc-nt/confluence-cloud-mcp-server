@@ -29,24 +29,37 @@
 Task Lifecycle:
   1. Identify task: Từ current sprint hoặc user request
   2. Focus mode: Làm từng task một, không jump around
-  3. Update progress: Cập nhật sprint doc khi complete
-  4. Commit clean: Clear commit message theo convention
-  5. Update status: Cập nhật sprint document và project_roadmap.md
+  3. Implement feature: Code implementation với proper error handling
+  4. Test Suite Update: MANDATORY - Update test suite cho mọi tính năng mới
+  5. Quality validation: All tests phải PASS trước khi mark complete
+  6. Update progress: Cập nhật sprint doc khi ALL TESTS PASS
+  7. Commit clean: Clear commit message theo convention
+  8. Update status: Cập nhật sprint document và project_roadmap.md
 
 Quality Gates:
-  - Code compile: npm run build thành công
-  - Tests pass: npm test pass (nếu có tests)
+  - Code compile: Build thành công
+  - Test Suite: All automated tests PASS (connection + functional)
+  - No regressions: Existing functionality không bị break
   - No token leaks: Không commit sensitive data
-  - Documentation: Update docs
+  - Documentation: Update docs với test results
+  
+Test Requirements:
+  - Mọi feature mới cần có corresponding tests
+  - Tests phải PASS trước khi complete sprint task
+  - Test suite phải được maintain và updated consistently
 ```
 
-### Cấu trúc Document
+### Cấu trúc Project
 
 ```
-docs/
-├── 00_context/              # Technical specifications và requirements 
-├── 01_plan/                 # Project roadmap và timeline
-└── 02_implement/            # Sprint-by-sprint implementation tasks
+project-root/
+├── src/                     # Main implementation
+├── test-client/             # MANDATORY - Test suite cho validation
+├── docs/
+│   ├── 00_context/          # Technical specifications và requirements 
+│   ├── 01_plan/             # Project roadmap và timeline
+│   └── 02_implement/        # Sprint-by-sprint implementation tasks
+└── dist/                    # Compiled output
 ```
 
 ### Vai trò của các nhóm Document
