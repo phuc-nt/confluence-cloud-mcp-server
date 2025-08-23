@@ -6,6 +6,7 @@ import { getPageContentHandler, getPageContentToolDefinition } from './get-page-
 import { updatePageHandler, updatePageToolDefinition } from './update-page.js';
 import { deletePageHandler, deletePageToolDefinition } from './delete-page.js';
 import { getSpacesHandler, getSpacesToolDefinition } from './get-spaces.js';
+import { getPageVersionsHandler, getPageVersionsToolDefinition } from './get-page-versions.js';
 
 const logger = new Logger('ToolRegistry');
 
@@ -25,12 +26,12 @@ export async function registerConfluenceTools(wrapper: McpServerWrapper): Promis
   try {
     logger.info('Registering Confluence tools...');
     
-    // Register all Sprint 1 tools
-    logger.info('Registering all Sprint 1 tools: createPage, getPageContent, updatePage, deletePage, getSpaces');
+    // Register all Sprint 1 tools + Sprint 2.2 additions
+    logger.info('Registering tools: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions');
     // Tools will be registered through the main server handler
     
     logger.info('Tool registration infrastructure ready');
-    logger.info('5 tools ready: createPage, getPageContent, updatePage, deletePage, getSpaces');
+    logger.info('6 tools ready: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions');
   } catch (error) {
     logger.error('Failed to register tools:', error);
     throw error;
@@ -47,6 +48,7 @@ export function getToolDefinitions() {
     updatePageToolDefinition,
     deletePageToolDefinition,
     getSpacesToolDefinition,
+    getPageVersionsToolDefinition,
   ];
 }
 
@@ -74,6 +76,9 @@ export async function handleToolCall(
     case 'getSpaces':
       return getSpacesHandler(params, wrapper);
     
+    case 'getPageVersions':
+      return getPageVersionsHandler(params, wrapper);
+    
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -84,11 +89,13 @@ export async function handleToolCall(
  */
 export function getAvailableTools(): string[] {
   return [
-    // Sprint 1 tools (to be implemented)
+    // Sprint 1 tools (completed)
     'createPage',
     'getPageContent', 
     'updatePage',
     'deletePage',
-    'getSpaces'
+    'getSpaces',
+    // Sprint 2.2 addition
+    'getPageVersions'
   ];
 }

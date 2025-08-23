@@ -148,4 +148,21 @@ export class ConfluenceApiClient {
       throw ErrorHandler.handleApiError(error);
     }
   }
+
+  async getPageVersions(pageId: string, limit: number = 10): Promise<{ results: any[] }> {
+    try {
+      this.logger.info(`Retrieving version history for page: ${pageId}`);
+      this.logger.debug(`Making request to /pages/${pageId}/versions?limit=${limit}`);
+      
+      const response = await this.client.get(`/pages/${pageId}/versions?limit=${limit}`);
+      
+      this.logger.debug(`Response status: ${response.status}`);
+      this.logger.debug(`Found ${response.data.results?.length || 0} versions`);
+      
+      return response.data;
+    } catch (error) {
+      this.logger.error('getPageVersions failed:', error);
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
 }

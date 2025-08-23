@@ -154,6 +154,43 @@ async function testUpdatePage(client, pageId, currentVersion) {
   };
 }
 
+async function testGetPageVersions(client, pageId) {
+  TestUtils.logTest('getPageVersions', 'RUNNING');
+  
+  const response = await client.callTool('getPageVersions', {
+    pageId: pageId,
+    limit: 5
+  });
+  
+  TestUtils.validateResponse(response); // Just check success
+  
+  // Extract info from response text
+  const responseText = response.content.map(c => c.text).join(' ');
+  
+  // Check if page ID is in response
+  if (!responseText.includes(pageId)) {
+    throw new Error(`Page ID ${pageId} not found in versions response`);
+  }
+  
+  // Look for version numbers (should have at least version 1)
+  const versionMatch = responseText.match(/Version (\d+)/gi);
+  if (!versionMatch || versionMatch.length === 0) {
+    throw new Error('No version numbers found in response');
+  }
+  
+  // Extract latest version number
+  const versions = versionMatch.map(v => parseInt(v.match(/\d+/)[0])).sort((a, b) => b - a);
+  const latestVersion = versions[0];
+  
+  console.log(`   ✅ Retrieved version history for page ${pageId} (latest: v${latestVersion})`);
+  
+  return {
+    pageId: pageId,
+    latestVersion: latestVersion,
+    totalVersions: versions.length
+  };
+}
+
 async function testDeletePage(client, pageId) {
   TestUtils.logTest('deletePage', 'RUNNING');
   
@@ -209,18 +246,31 @@ async function runCrudWorkflow(client) {
   const getResult = await testGetPageContent(client, pageId);
   pageVersion = getResult.version;
   
-  // 3. Update page
+  // 3. Test getPageVersions (should show initial version)
+  const versionsResult1 = await testGetPageVersions(client, pageId);
+  
+  // 4. Update page
   const updateResult = await testUpdatePage(client, pageId, pageVersion);
   
-  // 4. Get updated content
+  // 5. Test getPageVersions again (should show 2 versions after update)
+  const versionsResult2 = await testGetPageVersions(client, pageId);
+  
+  // Validate version progression
+  if (versionsResult2.latestVersion <= versionsResult1.latestVersion) {
+    throw new Error(`Version should have increased: ${versionsResult1.latestVersion} -> ${versionsResult2.latestVersion}`);
+  }
+  
+  // 6. Get updated content
   await testGetPageContent(client, pageId);
   
-  // 5. Delete page
+  // 7. Delete page
   await testDeletePage(client, pageId);
   
   return {
     workflowCompleted: true,
-    pageId: pageId
+    pageId: pageId,
+    initialVersion: versionsResult1.latestVersion,
+    finalVersion: versionsResult2.latestVersion
   };
 }
 
