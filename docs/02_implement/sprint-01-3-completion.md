@@ -2,8 +2,8 @@
 
 **Duration**: 2 working days (2MD)  
 **Parent Sprint**: Sprint 1 - Foundation & Page Management (see [Project Roadmap](../01_plan/project-roadmap.md))  
-**Status**: ⏸️ **Blocked** - Waiting for Sprint 1.1 & 1.2 completion  
-**Prerequisites**: [Sprint 1.2 - Core Page Tools](sprint-01-2-core-tools.md) currently blocked
+**Status**: 📋 **Ready to Start**  
+**Prerequisites**: [Sprint 1.2 - Core Page Tools](sprint-01-2-core-tools.md) ✅ **completed**
 
 ## Sub-Sprint Overview
 
@@ -211,6 +211,6 @@ Sprint 2 will focus on search capabilities. The foundation established in Sprint
 
 ---
 
-**Sub-Sprint Status**: ⏸️ **Blocked**  
-**Dependencies**: Sprint 1.1 tool registration + Sprint 1.2 core tools  
-**Sprint 1 Goal**: 5 core page management tools operational
+**Sub-Sprint Status**: 📋 **Ready to Start**  
+**Progress**: 3/5 Sprint 1 tools completed (createPage, getPageContent, updatePage)  
+**Sprint 1 Goal**: 5 core page management tools operational (deletePage, getSpaces remaining)

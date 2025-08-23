@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { Logger } from './logger.js';
 import { ErrorHandler } from './error-handler.js';
+import { ConfluencePage, ConfluenceSpace, PageCreateRequest, PageUpdateRequest } from '../schemas/confluence.js';
 
 export interface ConfluenceConfig {
   siteName: string;
@@ -70,6 +71,60 @@ export class ConfluenceApiClient {
       // We'll use a spaces call to verify authentication
       const response = await this.client.get('/spaces?limit=1');
       return { authenticated: true, spaces: response.data };
+    } catch (error) {
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  // Page Management Methods
+
+  async createPage(data: PageCreateRequest): Promise<ConfluencePage> {
+    try {
+      this.logger.info(`Creating page: ${data.title} in space ${data.spaceId}`);
+      const response = await this.client.post('/pages', data);
+      this.logger.info(`Page created successfully: ${response.data.id}`);
+      return response.data;
+    } catch (error) {
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async getPageContent(pageId: string, bodyFormat: 'storage' | 'atlas_doc_format' = 'storage'): Promise<ConfluencePage> {
+    try {
+      this.logger.info(`Retrieving page content: ${pageId}`);
+      const response = await this.client.get(`/pages/${pageId}?body-format=${bodyFormat}`);
+      return response.data;
+    } catch (error) {
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async updatePage(pageId: string, data: PageUpdateRequest): Promise<ConfluencePage> {
+    try {
+      this.logger.info(`Updating page: ${pageId}`);
+      const response = await this.client.put(`/pages/${pageId}`, data);
+      this.logger.info(`Page updated successfully: ${pageId}`);
+      return response.data;
+    } catch (error) {
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async deletePage(pageId: string): Promise<void> {
+    try {
+      this.logger.info(`Deleting page: ${pageId}`);
+      await this.client.delete(`/pages/${pageId}`);
+      this.logger.info(`Page deleted successfully: ${pageId}`);
+    } catch (error) {
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async getSpaces(limit: number = 25): Promise<{ results: ConfluenceSpace[] }> {
+    try {
+      this.logger.info('Retrieving spaces list');
+      const response = await this.client.get(`/spaces?limit=${limit}`);
+      return response.data;
     } catch (error) {
       throw ErrorHandler.handleApiError(error);
     }

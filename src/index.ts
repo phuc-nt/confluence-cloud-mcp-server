@@ -11,7 +11,7 @@ import {
 import dotenv from 'dotenv';
 import { Logger } from './utils/logger.js';
 import { ConfluenceApiClient, ConfluenceConfig } from './utils/confluence-api.js';
-import { registerConfluenceTools, getAvailableTools } from './tools/confluence/index.js';
+import { registerConfluenceTools, getToolDefinitions, handleToolCall } from './tools/confluence/index.js';
 
 // Load environment variables
 dotenv.config();
@@ -78,30 +78,36 @@ const server = new Server(
 
 // List tools handler
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-  // For now, return available tools list (implementations coming in Sprint 1.2)
-  const availableTools = getAvailableTools();
-  logger.debug(`Listing ${availableTools.length} available tools`);
+  const toolDefinitions = getToolDefinitions();
+  logger.debug(`Listing ${toolDefinitions.length} available tools`);
   
   return {
-    tools: availableTools.map(toolName => ({
-      name: toolName,
-      description: `Confluence ${toolName} tool (implementation pending Sprint 1.2)`,
-      inputSchema: {
-        type: 'object',
-        properties: {},
-      },
-    })),
+    tools: toolDefinitions,
   };
 });
 
 // Call tool handler
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name } = request.params;
+  const { name, arguments: params } = request.params;
   
-  throw new McpError(
-    ErrorCode.MethodNotFound,
-    `Tool ${name} not implemented yet`,
-  );
+  try {
+    logger.debug(`Calling tool: ${name}`);
+    
+    // Create wrapper with API client
+    const wrapper = {
+      server,
+      apiClient: confluenceClient,
+    };
+    
+    return await handleToolCall(name, params, wrapper);
+  } catch (error) {
+    logger.error(`Tool ${name} failed:`, error);
+    
+    throw new McpError(
+      ErrorCode.InternalError,
+      `Tool ${name} failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
+  }
 });
 
 async function main() {
