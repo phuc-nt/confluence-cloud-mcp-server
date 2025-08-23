@@ -17,7 +17,7 @@ import { registerConfluenceTools, getToolDefinitions, handleToolCall } from './t
 dotenv.config();
 
 // Validate required environment variables
-const requiredEnvVars = ['CONFLUENCE_SITE_NAME', 'CONFLUENCE_API_TOKEN'];
+const requiredEnvVars = ['CONFLUENCE_SITE_NAME', 'CONFLUENCE_EMAIL', 'CONFLUENCE_API_TOKEN'];;
 const logger = new Logger('ConfluenceMCPServer');
 
 // Global API client instance
@@ -40,16 +40,30 @@ function validateEnvironment(): void {
     process.exit(1);
   }
   
+  // Validate email format
+  const email = process.env.CONFLUENCE_EMAIL;
+  if (!email?.includes('@')) {
+    logger.error('CONFLUENCE_EMAIL must be a valid email address');
+    process.exit(1);
+  }
+  
   logger.info('Environment validation successful');
 }
 
 async function initializeApiClient(): Promise<void> {
   const config: ConfluenceConfig = {
     siteName: process.env.CONFLUENCE_SITE_NAME!,
+    email: process.env.CONFLUENCE_EMAIL!,      // Added email for Basic Auth
     apiToken: process.env.CONFLUENCE_API_TOKEN!,
   };
 
   confluenceClient = new ConfluenceApiClient(config);
+
+  // Skip API connection test if requested (for testing MCP protocol)
+  if (process.env.SKIP_API_CONNECTION_TEST === 'true') {
+    logger.info('Skipping Confluence API connection test (SKIP_API_CONNECTION_TEST=true)');
+    return;
+  }
 
   // Test the connection
   logger.info('Testing Confluence API connection...');
@@ -57,7 +71,7 @@ async function initializeApiClient(): Promise<void> {
   
   if (!isConnected) {
     logger.error('Failed to connect to Confluence API');
-    logger.error('Please check your CONFLUENCE_SITE_NAME and CONFLUENCE_API_TOKEN');
+    logger.error('Please check your CONFLUENCE_SITE_NAME, CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN');
     process.exit(1);
   }
   

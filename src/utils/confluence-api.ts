@@ -5,6 +5,7 @@ import { ConfluencePage, ConfluenceSpace, PageCreateRequest, PageUpdateRequest }
 
 export interface ConfluenceConfig {
   siteName: string;
+  email: string;     // Added for Basic Auth
   apiToken: string;
 }
 
@@ -17,10 +18,13 @@ export class ConfluenceApiClient {
     this.config = config;
     this.logger = new Logger('ConfluenceAPI');
     
+    // Create Basic Auth string for Confluence Cloud
+    const auth = Buffer.from(`${config.email}:${config.apiToken}`).toString('base64');
+    
     this.client = axios.create({
       baseURL: `https://${config.siteName}/wiki/api/v2`,
       headers: {
-        'Authorization': `Bearer ${config.apiToken}`,
+        'Authorization': `Basic ${auth}`,  // Changed from Bearer to Basic
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
@@ -55,11 +59,18 @@ export class ConfluenceApiClient {
   async testConnection(): Promise<boolean> {
     try {
       this.logger.info('Testing connection to Confluence API...');
+      // Use spaces endpoint for v2 API
       const response = await this.client.get('/spaces?limit=1');
       this.logger.info('Connection test successful');
       return response.status === 200;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Connection test failed:', error);
+      
+      // If endpoint fails, provide helpful error info
+      if (error.response?.status === 404) {
+        this.logger.error('API v2 endpoint not found - check if your Confluence instance supports API v2');
+      }
+      
       return false;
     }
   }
@@ -123,9 +134,17 @@ export class ConfluenceApiClient {
   async getSpaces(limit: number = 25): Promise<{ results: ConfluenceSpace[] }> {
     try {
       this.logger.info('Retrieving spaces list');
+      this.logger.debug(`Making request to /spaces?limit=${limit}`);
+      
+      // Use v2 API endpoint
       const response = await this.client.get(`/spaces?limit=${limit}`);
-      return response.data;
+      
+      this.logger.debug(`Response status: ${response.status}`);
+      this.logger.debug(`Response data:`, JSON.stringify(response.data, null, 2));
+      
+      return response.data; // v2 API already has { results: [...] } format
     } catch (error) {
+      this.logger.error('getSpaces failed:', error);
       throw ErrorHandler.handleApiError(error);
     }
   }
