@@ -4,6 +4,8 @@ import { Logger } from '../../utils/logger.js';
 import { createPageHandler, createPageToolDefinition } from './create-page.js';
 import { getPageContentHandler, getPageContentToolDefinition } from './get-page-content.js';
 import { updatePageHandler, updatePageToolDefinition } from './update-page.js';
+import { deletePageHandler, deletePageToolDefinition } from './delete-page.js';
+import { getSpacesHandler, getSpacesToolDefinition } from './get-spaces.js';
 
 const logger = new Logger('ToolRegistry');
 
@@ -23,12 +25,12 @@ export async function registerConfluenceTools(wrapper: McpServerWrapper): Promis
   try {
     logger.info('Registering Confluence tools...');
     
-    // Register Sprint 1.2 tools
-    logger.info('Registering Sprint 1.2 tools: createPage, getPageContent, updatePage');
+    // Register all Sprint 1 tools
+    logger.info('Registering all Sprint 1 tools: createPage, getPageContent, updatePage, deletePage, getSpaces');
     // Tools will be registered through the main server handler
     
     logger.info('Tool registration infrastructure ready');
-    logger.info('3 tools ready: createPage, getPageContent, updatePage');
+    logger.info('5 tools ready: createPage, getPageContent, updatePage, deletePage, getSpaces');
   } catch (error) {
     logger.error('Failed to register tools:', error);
     throw error;
@@ -43,6 +45,8 @@ export function getToolDefinitions() {
     createPageToolDefinition,
     getPageContentToolDefinition,
     updatePageToolDefinition,
+    deletePageToolDefinition,
+    getSpacesToolDefinition,
   ];
 }
 
@@ -63,6 +67,12 @@ export async function handleToolCall(
     
     case 'updatePage':
       return updatePageHandler(params, wrapper);
+    
+    case 'deletePage':
+      return deletePageHandler(params, wrapper);
+    
+    case 'getSpaces':
+      return getSpacesHandler(params, wrapper);
     
     default:
       throw new Error(`Unknown tool: ${toolName}`);
