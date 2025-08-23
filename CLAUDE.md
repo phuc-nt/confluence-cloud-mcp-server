@@ -49,19 +49,6 @@ Test Requirements:
   - Test suite phải được maintain và updated consistently
 ```
 
-### Cấu trúc Project
-
-```
-project-root/
-├── src/                     # Main implementation
-├── test-client/             # MANDATORY - Test suite cho validation
-├── docs/
-│   ├── 00_context/          # Technical specifications và requirements 
-│   ├── 01_plan/             # Project roadmap và timeline
-│   └── 02_implement/        # Sprint-by-sprint implementation tasks
-└── dist/                    # Compiled output
-```
-
 ### Vai trò của các nhóm Document
 
 **00_context/ - Technical Foundation (KHÔNG SỬA KHI CHƯA ĐƯỢC PHÊ DUYỆT)**:

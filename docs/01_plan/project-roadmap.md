@@ -12,14 +12,19 @@
 | Sprint | Status | Tools | Duration | Progress | AI Client Test |
 |--------|--------|-------|----------|----------|-----------------|
 | **Sprint 1** | ✅ **COMPLETED** | 5 tools | 8MD | 8/8 days ✅ | ✅ **Cline Validated** |
-| **Sprint 2** | 🚀 **Next** | +3 tools | 7MD | 0/7 days | Pending |
-| **Sprint 3** | ⏸️ **Pending** | +3 tools | 5MD | 0/5 days | Pending |
+| **Sprint 2** | 🚀 **IN PROGRESS** | +3 tools (8 total) | 7MD | 0/7 days | Pending |
+| **Sprint 2.1** | 🚀 **Ready** | updatePage fix | 2MD | 0/2 days | Critical Priority |
+| **Sprint 2.2** | ⏸️ **Waiting** | getPageVersions | 2MD | 0/2 days | Pending |
+| **Sprint 2.3** | ⏸️ **Waiting** | searchPages | 3MD | 0/3 days | Pending |
+| **Sprint 3** | ⏸️ **Pending** | +3 tools (11 total) | 5MD | 0/5 days | Pending |
 
 ### Next Actions  
-- 🎯 **Priority 1**: Fix updatePage version conflict handling (409 errors)
-- 🎯 **Priority 2**: Begin Sprint 2 - Search & Discovery tools (searchPages, getPageVersions)  
-- 📋 **This Sprint**: Implement 3 additional tools for enhanced content discovery
-- 🎯 **Sprint 2 Goal**: Universal search and version tracking capabilities
+- 🎯 **Current Focus**: Sprint 2.1 - Fix updatePage version conflict handling (409 errors)
+- 📋 **Sprint 2 Structure**: 3 sub-sprints for systematic implementation
+  - **2.1** (2 days): Fix updatePage conflicts with retry logic
+  - **2.2** (2 days): Implement getPageVersions for version discovery
+  - **2.3** (3 days): Implement searchPages for content discovery
+- 🎯 **Sprint 2 Goal**: 8 fully functional tools with reliable version control
 
 ### Current Status Details
 - ✅ **Sprint 1 VALIDATION COMPLETE**: Tested with real AI client (Cline)
@@ -124,15 +129,16 @@ gantt
     deletePage + getSpaces :1d
 ```
 
-### Sprint 2 (7 working days)  
+### Sprint 2 (7 working days) - Sub-Sprint Structure
 ```mermaid
 gantt
-    title Sprint 2: Search & Discovery (7MD)
-    section Search Tools (4MD)
-    searchPages           :2d
+    title Sprint 2: Fix Conflicts + Search & Discovery (7MD)
+    section Sprint 2.1 (2MD)
+    updatePage Fix        :2d
+    section Sprint 2.2 (2MD) 
     getPageVersions       :2d
-    section Infrastructure (3MD)
-    Error Handling        :2d
+    section Sprint 2.3 (3MD)
+    searchPages           :2d
     Integration Testing   :1d
 ```
 
@@ -209,10 +215,10 @@ gantt
 
 ## Next Steps
 
-1. **Review**: [Sprint 1 Implementation Plan](../02_implement/sprint-01-foundation.md)
-2. **Setup**: Development environment and dependencies  
-3. **Begin**: Page management tool implementation
-4. **Track**: Progress against sprint milestones
+1. **Current Sprint**: [Sprint 2.1 - Fix updatePage Conflicts](../02_implement/sprint-02-1-updatepage-fix.md)
+2. **Sprint Overview**: [Sprint 2 Master Plan](../02_implement/sprint-02-overview.md)
+3. **Sequential Execution**: Complete 2.1 → 2.2 → 2.3 in order
+4. **Track Progress**: Update sub-sprint documents as tasks complete
 
 ---
 
