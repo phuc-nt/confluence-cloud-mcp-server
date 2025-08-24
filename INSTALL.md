@@ -76,24 +76,7 @@ Make sure your account has these Confluence permissions:
 - **Manage Comments**: Add, edit, and delete comments
 - **Search Content**: Access search and discovery features
 
-## Step 3: Find Your Global NPM Installation Path
-
-First, find where npm installed the package globally:
-
-```bash
-which confluence-cloud-mcp-server
-```
-
-**Copy this path** - you'll need it for the configuration below.
-
-**Common paths:**
-
-- **macOS (Homebrew):** `/opt/homebrew/bin/confluence-cloud-mcp-server`
-- **macOS (Node.js):** `/usr/local/bin/confluence-cloud-mcp-server`
-- **Linux:** `/usr/local/bin/confluence-cloud-mcp-server`
-- **Windows:** `C:\\Users\\{username}\\AppData\\Roaming\\npm\\confluence-cloud-mcp-server.cmd`
-
-## Step 4: Configure Your AI Client
+## Step 3: Configure Your AI Client
 
 ### Configuration Format
 
@@ -115,15 +98,13 @@ which confluence-cloud-mcp-server
 ```
 
 **Key points:**
-- Use `"command": "node"` with `"args": ["/path/to/binary"]` format
+- Use simple `"command": "confluence-cloud-mcp-server"` format (recommended)
 - Include `"type": "stdio"` and `"timeout": 60` for stability
 - Set `"disabled": false` to ensure server is active
 
 ### Deployment Configuration
 
-Choose the configuration that best fits your needs:
-
-### 🔧 Recommended: Single Server Configuration
+### 🔧 Recommended: Simple Command Configuration
 
 **Complete Confluence integration with all 11 tools:**
 
@@ -134,8 +115,7 @@ Choose the configuration that best fits your needs:
       "disabled": false,
       "timeout": 60,
       "type": "stdio",
-      "command": "node",
-      "args": ["/opt/homebrew/bin/confluence-cloud-mcp-server"],
+      "command": "confluence-cloud-mcp-server",
       "env": {
         "CONFLUENCE_SITE_NAME": "your-site-name",
         "CONFLUENCE_EMAIL": "your-email@example.com",
@@ -177,7 +157,7 @@ If you built from source instead of using npm:
 - `CONFLUENCE_EMAIL`: Your Atlassian account email address
 - `CONFLUENCE_API_TOKEN`: Your API token from step 2
 
-**⚠️ Important:** Replace `/opt/homebrew/bin/confluence-cloud-mcp-server` with **your actual path** from the `which` command above.
+**✅ Simple Setup:** No need to find complex paths - just use the command name directly after global installation.
 
 ### Supported MCP Clients
 
@@ -209,24 +189,22 @@ pwd
 - macOS: `/Users/yourname/confluence-cloud-mcp-server/dist/index.js`
 - Windows: `C:\\\\Users\\\\YourName\\\\confluence-cloud-mcp-server\\\\dist\\\\index.js`
 
-## Step 5: Verify Installation
+## Step 4: Verify Installation
 
 ### Test MCP Server Directly
 
 ```bash
-# Test main server
-node ./dist/index.js
-
-# Test with environment variables
-CONFLUENCE_SITE_NAME=your-site.atlassian.net CONFLUENCE_EMAIL=your@email.com CONFLUENCE_API_TOKEN=your-token node ./dist/index.js
+# Test the global command
+CONFLUENCE_SITE_NAME=your-site.atlassian.net CONFLUENCE_EMAIL=your@email.com CONFLUENCE_API_TOKEN=your-token SKIP_API_CONNECTION_TEST=true confluence-cloud-mcp-server
 ```
 
 You should see output showing tools registered successfully:
 
 ```
-[INFO] Confluence MCP Server starting...
-[INFO] Registered 11 tools: createPage, getPageContent, updatePage, deletePage, getSpaces, searchPages, getPageVersions, getPageComments, addComment, updateComment, deleteComment
-[INFO] Server initialized successfully
+[ConfluenceMCPServer] INFO: Environment validation successful
+[ConfluenceMCPServer] INFO: Skipping Confluence API connection test (SKIP_API_CONNECTION_TEST=true)
+[ToolRegistry] INFO: Registering Confluence tools...
+[ConfluenceMCPServer] INFO: Confluence Cloud MCP Server started successfully
 ```
 
 ### Test with Your AI Client

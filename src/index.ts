@@ -147,6 +147,7 @@ async function main() {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Execute main if this file is run directly  
+if (process.argv[1] && (process.argv[1].includes('index.js') || process.argv[1].includes('confluence-cloud-mcp-server'))) {
   main().catch(console.error);
 }
