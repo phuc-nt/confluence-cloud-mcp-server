@@ -215,7 +215,7 @@ async function testSearchPages(client) {
   
   // Test 2: Space-filtered search  
   const spaceSearchResponse = await client.callTool('searchPages', {
-    spaceKey: 'AWA1',
+    spaceKey: CONFIG.test.spaceKey,
     query: 'Test', 
     limit: 3
   });

@@ -1,0 +1,66 @@
+# Development files
+src/
+test-client/
+docs/
+sample/
+
+# TypeScript config
+tsconfig.json
+.env.example
+.env
+
+# Development tools
+.vscode/
+.serena/
+
+# Git files
+.git/
+.gitignore
+
+# Testing and development
+*.test.js
+*.test.ts
+test/
+tests/
+__tests__/
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary folders
+tmp/
+temp/
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
