@@ -8,6 +8,10 @@ import { deletePageHandler, deletePageToolDefinition } from './delete-page.js';
 import { getSpacesHandler, getSpacesToolDefinition } from './get-spaces.js';
 import { getPageVersionsHandler, getPageVersionsToolDefinition } from './get-page-versions.js';
 import { searchPagesHandler, searchPagesToolDefinition } from './search-pages.js';
+import { getPageCommentsHandler, getPageCommentsToolDefinition } from './get-page-comments.js';
+import { addCommentHandler, addCommentToolDefinition } from './add-comment.js';
+import { updateCommentHandler, updateCommentToolDefinition } from './update-comment.js';
+import { deleteCommentHandler, deleteCommentToolDefinition } from './delete-comment.js';
 
 const logger = new Logger('ToolRegistry');
 
@@ -51,6 +55,10 @@ export function getToolDefinitions() {
     getSpacesToolDefinition,
     getPageVersionsToolDefinition,
     searchPagesToolDefinition,
+    getPageCommentsToolDefinition,
+    addCommentToolDefinition,
+    updateCommentToolDefinition,
+    deleteCommentToolDefinition,
   ];
 }
 
@@ -83,6 +91,18 @@ export async function handleToolCall(
     
     case 'searchPages':
       return searchPagesHandler(params, wrapper);
+    
+    case 'getPageComments':
+      return getPageCommentsHandler(params, wrapper);
+    
+    case 'addComment':
+      return addCommentHandler(params, wrapper);
+    
+    case 'updateComment':
+      return updateCommentHandler(params, wrapper);
+    
+    case 'deleteComment':
+      return deleteCommentHandler(params, wrapper);
     
     default:
       throw new Error(`Unknown tool: ${toolName}`);

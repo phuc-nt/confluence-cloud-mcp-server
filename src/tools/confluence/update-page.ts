@@ -115,7 +115,7 @@ export async function updatePageHandler(
 // Tool registration metadata for MCP server
 export const updatePageToolDefinition = {
   name: 'updatePage',
-  description: 'Update title and/or content of an existing Confluence page',
+  description: 'Update title and/or content of an existing Confluence page. Requires current version for conflict resolution. WORKFLOW: Use getPageContent or getPageVersions first to get current version, then call updatePage with that version.',
   inputSchema: {
     type: 'object',
     properties: {

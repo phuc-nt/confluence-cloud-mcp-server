@@ -94,7 +94,7 @@ export async function deletePageHandler(
 // Tool registration metadata for MCP server
 export const deletePageToolDefinition = {
   name: 'deletePage',
-  description: 'Delete a Confluence page permanently',
+  description: 'Delete a Confluence page permanently. This action cannot be undone. WORKFLOW: Use searchPages or getPageContent first to confirm page ID, then call deletePage.',
   inputSchema: {
     type: 'object',
     properties: {

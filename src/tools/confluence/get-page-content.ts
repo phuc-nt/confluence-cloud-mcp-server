@@ -89,7 +89,7 @@ export async function getPageContentHandler(
 // Tool registration metadata for MCP server
 export const getPageContentToolDefinition = {
   name: 'getPageContent',
-  description: 'Retrieve complete content and metadata of a Confluence page',
+  description: 'Retrieve complete content and metadata of a Confluence page. Provides page version for updatePage operations. WORKFLOW: Use searchPages first to find page ID, then getPageContent to retrieve content and version.',
   inputSchema: {
     type: 'object',
     properties: {

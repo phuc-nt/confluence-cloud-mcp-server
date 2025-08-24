@@ -185,6 +185,96 @@ export class ConfluenceApiClient {
     }
   }
 
+  async getPageComments(pageId: string, limit: number = 25, cursor?: string): Promise<any> {
+    try {
+      this.logger.info(`Getting comments for page: ${pageId}`);
+      
+      let url = `/pages/${pageId}/footer-comments?limit=${limit}&body-format=storage`;
+      if (cursor) {
+        url += `&cursor=${cursor}`;
+      }
+
+      const response = await this.v2Client.get(url);
+      
+      this.logger.info(`Retrieved ${response.data.results?.length || 0} comments for page ${pageId}`);
+      
+      return {
+        results: response.data.results || [],
+        _links: response.data._links || {},
+        limit: limit,
+        size: response.data.results?.length || 0
+      };
+    } catch (error) {
+      this.logger.error(`Failed to get comments for page ${pageId}:`, error);
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async addComment(pageId: string, content: string, parentId?: string): Promise<any> {
+    try {
+      this.logger.info(`Adding comment to page: ${pageId}${parentId ? ` (reply to: ${parentId})` : ''}`);
+      
+      const requestBody: any = {
+        pageId: pageId,
+        body: {
+          representation: 'storage',
+          value: content
+        }
+      };
+
+      if (parentId) {
+        requestBody.parentId = parentId;
+      }
+
+      const response = await this.v2Client.post('/footer-comments', requestBody);
+      
+      this.logger.info(`Successfully added comment: ${response.data.id}`);
+      
+      return response.data;
+    } catch (error) {
+      this.logger.error(`Failed to add comment to page ${pageId}:`, error);
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async updateComment(commentId: string, content: string, version: number): Promise<any> {
+    try {
+      this.logger.info(`Updating comment: ${commentId} to version ${version}`);
+      
+      const requestBody = {
+        body: {
+          representation: 'storage',
+          value: content
+        },
+        version: {
+          number: version
+        }
+      };
+
+      const response = await this.v2Client.put(`/footer-comments/${commentId}`, requestBody);
+      
+      this.logger.info(`Successfully updated comment: ${commentId} to version ${response.data.version.number}`);
+      
+      return response.data;
+    } catch (error) {
+      this.logger.error(`Failed to update comment ${commentId}:`, error);
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
+  async deleteComment(commentId: string): Promise<void> {
+    try {
+      this.logger.info(`Deleting comment: ${commentId}`);
+      
+      await this.v2Client.delete(`/footer-comments/${commentId}`);
+      
+      this.logger.info(`Successfully deleted comment: ${commentId}`);
+    } catch (error) {
+      this.logger.error(`Failed to delete comment ${commentId}:`, error);
+      throw ErrorHandler.handleApiError(error);
+    }
+  }
+
   // V1 API Methods (Search & Content Discovery)
 
   async searchPages(searchParams: {

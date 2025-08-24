@@ -79,7 +79,7 @@ export async function createPageHandler(
 // Tool registration metadata for MCP server
 export const createPageToolDefinition = {
   name: 'createPage',
-  description: 'Create a new Confluence page in a specified space',
+  description: 'Create a new Confluence page in a specified space. WORKFLOW: Use getSpaces first to get space ID, then createPage to create the page.',
   inputSchema: {
     type: 'object',
     properties: {

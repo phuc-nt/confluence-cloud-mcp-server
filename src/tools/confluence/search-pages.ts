@@ -146,7 +146,7 @@ export async function searchPagesHandler(
 // Tool registration metadata for MCP server
 export const searchPagesToolDefinition = {
   name: 'searchPages',
-  description: 'Search for Confluence pages across spaces using text queries or filters. Supports CQL search and content API fallback. Returns page IDs for use with other tools like getPageContent.',
+  description: 'Search for Confluence pages across spaces using text queries or filters. Supports CQL search and content API fallback. Returns page IDs for use with other tools. WORKFLOW: Use this as the first step to find pages, then use page IDs with getPageContent, updatePage, deletePage, or comment tools.',
   inputSchema: {
     type: 'object',
     properties: {

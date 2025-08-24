@@ -1052,24 +1052,95 @@ return { data: result }; // Tools expect human-readable responses
 - **Real Test Result**: CQL search working with multiple patterns
 - **Status**: Production ready
 
-### 🎯 Sprint 3 Candidates - Next Priority Tools
-- **getPageComments**: Comment retrieval system
-- **addComment**: Comment creation functionality
-- **updateComment**: Comment modification
-- **deleteComment**: Comment removal
+---
+
+## COMMENT TOOLS
+
+### 11. getPageComments
+**Purpose**: Retrieve all footer comments for a specific Confluence page with content and metadata
+
+**Input Parameters**:
+```typescript
+{
+  pageId: string;         // ID of the page to get comments from
+  limit?: number;         // Max comments to return (default: 25, max: 100)
+  cursor?: string;        // Pagination cursor for next batch (optional)
+}
+```
+
+**Confluence API**: `GET /api/v2/pages/{pageId}/footer-comments?body-format=storage&limit={limit}`
+
+**Output Format**: Structured comment list with IDs, content, authors, and versions
+
+### 12. addComment
+**Purpose**: Add a new footer comment to a Confluence page, supports replies to existing comments
+
+**Input Parameters**:
+```typescript
+{
+  pageId: string;         // ID of the page to add comment to
+  content: string;        // Comment content in storage format (HTML)
+  parentId?: string;      // Parent comment ID for threaded replies (optional)
+}
+```
+
+**Confluence API**: `POST /api/v2/footer-comments` with body format
+
+**Output Format**: Created comment details with ID and version info
+
+### 13. updateComment
+**Purpose**: Update content of an existing comment with version conflict resolution
+
+**Input Parameters**:
+```typescript
+{
+  commentId: string;      // ID of comment to update
+  content: string;        // New content in storage format
+  version: number;        // Current version number (for conflict resolution)
+}
+```
+
+**Confluence API**: `PUT /api/v2/footer-comments/{commentId}` with version management
+
+**Output Format**: Updated comment with new version number
+
+### 14. deleteComment
+**Purpose**: Permanently delete a comment and all its replies
+
+**Input Parameters**:
+```typescript
+{
+  commentId: string;      // ID of comment to delete
+}
+```
+
+**Confluence API**: `DELETE /api/v2/footer-comments/{commentId}`
+
+**Output Format**: Deletion confirmation
+
+### 📊 Sprint 3 Test Coverage ✅ COMPLETED
+
+| Tool | MCP Protocol | API Integration | AI Client Testing | Production Ready |
+|------|-------------|-----------------|-------------------|------------------|
+| getPageComments | ✅ PASS | ✅ PASS | ✅ Cline Validated | ✅ YES |
+| addComment | ✅ PASS | ✅ PASS | ✅ Cline Validated | ✅ YES |
+| updateComment | ✅ PASS | ✅ PASS | ✅ Cline Validated | ✅ YES |
+| deleteComment | ✅ PASS | ✅ PASS | ✅ Cline Validated | ✅ YES |
 
 ### 🏆 Final Validation Summary
 
-- **MCP Protocol Compliance**: 100% PASS (7/7 tools)
-- **Functional Implementation**: 100% PASS (7/7 tools fully functional)
+- **MCP Protocol Compliance**: 100% PASS (11/11 tools)
+- **Functional Implementation**: 100% PASS (11/11 tools fully functional)  
 - **Real AI Client Testing**: ✅ Production validated with Cline (all tools)
 - **API Endpoints**: All implemented endpoints validated with real data
 - **Authentication**: Basic Auth format proven reliable across v1 and v2 APIs
 - **Content Format**: Storage format requirement confirmed
 - **Search Capability**: CQL-based universal search operational
+- **Comment Management**: Full CRUD comment workflow operational
+- **Version Management**: Conflict resolution working for pages and comments
 
-**Result**: Sprint 1+2 delivered a production-ready MCP server with complete CRUD + Search functionality, establishing robust dual API architecture for advanced features.
+**Result**: Sprint 1+2+3 delivered a production-ready MCP server with complete CRUD + Search + Comment functionality, transforming from content management to full collaboration platform.
 
 ---
 
-This comprehensive tool reference enables building a complete Confluence integration with tool-only architecture. **Sprint 1+2 validation confirms 7/17 tools are production-ready**, with proven dual API architecture patterns established for the remaining 10 tools in subsequent sprints.
+This comprehensive tool reference enables building a complete Confluence integration with tool-only architecture. **Sprint 1+2+3 validation confirms 11/17 tools are production-ready** (65% complete), with proven dual API architecture and complete collaboration workflows established.
