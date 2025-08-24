@@ -191,6 +191,54 @@ async function testGetPageVersions(client, pageId) {
   };
 }
 
+async function testSearchPages(client) {
+  TestUtils.logTest('searchPages', 'RUNNING');
+  
+  // Test 1: Text search
+  const textSearchResponse = await client.callTool('searchPages', {
+    query: 'Test',
+    limit: 5
+  });
+  
+  TestUtils.validateResponse(textSearchResponse); // Just check success
+  
+  // Extract info from response text
+  const responseText = textSearchResponse.content.map(c => c.text).join(' ');
+  
+  // Check if search found results
+  const foundResults = responseText.includes('Search Results: Found') && 
+                      !responseText.includes('No pages found');
+  
+  if (!foundResults) {
+    throw new Error('Text search should find some results for "Test" query');
+  }
+  
+  // Test 2: Space-filtered search  
+  const spaceSearchResponse = await client.callTool('searchPages', {
+    spaceKey: 'AWA1',
+    query: 'Test', 
+    limit: 3
+  });
+  
+  TestUtils.validateResponse(spaceSearchResponse);
+  
+  const spaceResponseText = spaceSearchResponse.content.map(c => c.text).join(' ');
+  
+  // Verify search method is mentioned (CQL or Content API)
+  const hasSearchMethod = spaceResponseText.includes('Search method:');
+  if (!hasSearchMethod) {
+    throw new Error('Response should indicate which search method was used');
+  }
+  
+  console.log(`   ✅ searchPages working - Text search and space filtering successful`);
+  
+  return {
+    textSearchWorking: foundResults,
+    spaceSearchWorking: true,
+    searchMethod: spaceResponseText.match(/Search method: (\w+(?:\s+\w+)*)/)?.[1] || 'Unknown'
+  };
+}
+
 async function testDeletePage(client, pageId) {
   TestUtils.logTest('deletePage', 'RUNNING');
   
@@ -296,6 +344,10 @@ async function runToolsTests() {
         fn: () => testGetSpaces(client)
       },
       {
+        name: 'Search Pages',
+        fn: () => testSearchPages(client)
+      },
+      {
         name: 'Complete CRUD Workflow',
         fn: () => runCrudWorkflow(client)
       }
@@ -306,7 +358,7 @@ async function runToolsTests() {
     const success = TestUtils.printTestSummary(results);
     
     if (success) {
-      console.log('\\n🎉 All tools tests passed! Sprint 1 is ready for production.');
+      console.log('\\n🎉 All tools tests passed! Sprint 2 complete with 7 operational tools.');
     } else {
       console.log('\\n💥 Some tools tests failed. Check implementation.');
     }

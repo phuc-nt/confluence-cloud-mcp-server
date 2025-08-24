@@ -7,6 +7,7 @@ import { updatePageHandler, updatePageToolDefinition } from './update-page.js';
 import { deletePageHandler, deletePageToolDefinition } from './delete-page.js';
 import { getSpacesHandler, getSpacesToolDefinition } from './get-spaces.js';
 import { getPageVersionsHandler, getPageVersionsToolDefinition } from './get-page-versions.js';
+import { searchPagesHandler, searchPagesToolDefinition } from './search-pages.js';
 
 const logger = new Logger('ToolRegistry');
 
@@ -26,12 +27,12 @@ export async function registerConfluenceTools(wrapper: McpServerWrapper): Promis
   try {
     logger.info('Registering Confluence tools...');
     
-    // Register all Sprint 1 tools + Sprint 2.2 additions
-    logger.info('Registering tools: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions');
+    // Register all Sprint 1 tools + Sprint 2 additions
+    logger.info('Registering tools: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions, searchPages');
     // Tools will be registered through the main server handler
     
     logger.info('Tool registration infrastructure ready');
-    logger.info('6 tools ready: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions');
+    logger.info('7 tools ready: createPage, getPageContent, updatePage, deletePage, getSpaces, getPageVersions, searchPages');
   } catch (error) {
     logger.error('Failed to register tools:', error);
     throw error;
@@ -49,6 +50,7 @@ export function getToolDefinitions() {
     deletePageToolDefinition,
     getSpacesToolDefinition,
     getPageVersionsToolDefinition,
+    searchPagesToolDefinition,
   ];
 }
 
@@ -79,6 +81,9 @@ export async function handleToolCall(
     case 'getPageVersions':
       return getPageVersionsHandler(params, wrapper);
     
+    case 'searchPages':
+      return searchPagesHandler(params, wrapper);
+    
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -96,6 +101,8 @@ export function getAvailableTools(): string[] {
     'deletePage',
     'getSpaces',
     // Sprint 2.2 addition
-    'getPageVersions'
+    'getPageVersions',
+    // Sprint 2.3 addition
+    'searchPages'
   ];
 }
