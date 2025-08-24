@@ -98,13 +98,14 @@ Make sure your account has these Confluence permissions:
 ```
 
 **Key points:**
-- Use simple `"command": "confluence-cloud-mcp-server"` format (recommended)
-- Include `"type": "stdio"` and `"timeout": 60` for stability
+- Use `"command": "node"` with `"args": ["/opt/homebrew/bin/confluence-cloud-mcp-server"]` format (recommended)
+- Include `"type": "stdio"` and `"timeout": 60` for stability  
 - Set `"disabled": false` to ensure server is active
+- Path `/opt/homebrew/bin/confluence-cloud-mcp-server` works on macOS after `npm install -g`
 
 ### Deployment Configuration
 
-### 🔧 Recommended: Simple Command Configuration
+### 🔧 Recommended: Node + Args Configuration
 
 **Complete Confluence integration with all 11 tools:**
 
@@ -115,7 +116,8 @@ Make sure your account has these Confluence permissions:
       "disabled": false,
       "timeout": 60,
       "type": "stdio",
-      "command": "confluence-cloud-mcp-server",
+      "command": "node",
+      "args": ["/opt/homebrew/bin/confluence-cloud-mcp-server"],
       "env": {
         "CONFLUENCE_SITE_NAME": "your-site-name",
         "CONFLUENCE_EMAIL": "your-email@example.com",
@@ -168,26 +170,39 @@ This server works with all major MCP clients:
 - **✅ Cursor** - Use the same configuration format  
 - **✅ Other MCP clients** - Use the same configuration format
 
-### Find Your Full Path (for Manual Installation)
+### Find Your Installation Path 
+
+**After `npm install -g confluence-cloud-mcp-server`:**
 
 **macOS/Linux:**
-
 ```bash
-pwd
-# Use the output + /dist/index.js
+which confluence-cloud-mcp-server
+# Expected: /opt/homebrew/bin/confluence-cloud-mcp-server (macOS)
+# Expected: /usr/local/bin/confluence-cloud-mcp-server (Linux)
 ```
 
-**Windows (PowerShell):**
-
-```bash
-(Get-Location).Path
-# Use the output + \\dist\\index.js
+**Windows:**
+```cmd
+where confluence-cloud-mcp-server
+# Expected: C:\Users\YourName\AppData\Roaming\npm\confluence-cloud-mcp-server
 ```
 
-**Example paths:**
+**Example configurations by OS:**
 
-- macOS: `/Users/yourname/confluence-cloud-mcp-server/dist/index.js`
-- Windows: `C:\\\\Users\\\\YourName\\\\confluence-cloud-mcp-server\\\\dist\\\\index.js`
+**macOS (Homebrew Node):**
+```json
+"args": ["/opt/homebrew/bin/confluence-cloud-mcp-server"]
+```
+
+**macOS/Linux (System Node):**
+```json
+"args": ["/usr/local/bin/confluence-cloud-mcp-server"]
+```
+
+**Windows:**
+```json
+"args": ["C:\\Users\\YourName\\AppData\\Roaming\\npm\\confluence-cloud-mcp-server.cmd"]
+```
 
 ## Step 4: Verify Installation
 

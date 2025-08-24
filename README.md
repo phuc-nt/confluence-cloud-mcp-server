@@ -48,6 +48,31 @@
 npm install -g confluence-cloud-mcp-server
 ```
 
+### ⚙️ Quick Configuration
+
+**Add to your MCP client configuration:**
+
+```json
+{
+  "mcpServers": {
+    "confluence": {
+      "disabled": false,
+      "timeout": 60,
+      "type": "stdio",
+      "command": "node",
+      "args": ["/opt/homebrew/bin/confluence-cloud-mcp-server"],
+      "env": {
+        "CONFLUENCE_SITE_NAME": "your-site.atlassian.net",
+        "CONFLUENCE_EMAIL": "your-email@example.com",
+        "CONFLUENCE_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+> **💡 Path varies by OS:** Use `which confluence-cloud-mcp-server` to find your installation path
+
 **📖 [Complete Installation Guide](INSTALL.md)** - Follow the step-by-step setup guide
 
 ## 📊 Project Status
