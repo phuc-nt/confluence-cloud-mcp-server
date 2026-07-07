@@ -9,9 +9,14 @@ import {
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
 import dotenv from 'dotenv';
+import { createRequire } from 'module';
 import { Logger } from './utils/logger.js';
 import { ConfluenceApiClient, ConfluenceConfig } from './utils/confluence-api.js';
 import { registerConfluenceTools, getToolDefinitions, handleToolCall } from './tools/confluence/index.js';
+
+// Read own package.json for serverInfo.version (ESM-safe require)
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json') as { version: string };
 
 // Load environment variables
 dotenv.config();
@@ -59,29 +64,42 @@ async function initializeApiClient(): Promise<void> {
 
   confluenceClient = new ConfluenceApiClient(config);
 
-  // Skip API connection test if requested (for testing MCP protocol)
+  // Backward-compat: SKIP_API_CONNECTION_TEST=true still skips (now a no-op since
+  // skipping is the default), but log a one-line deprecation notice.
   if (process.env.SKIP_API_CONNECTION_TEST === 'true') {
-    logger.info('Skipping Confluence API connection test (SKIP_API_CONNECTION_TEST=true)');
+    logger.info('SKIP_API_CONNECTION_TEST is deprecated: boot no longer tests the API connection ' +
+      'by default. This flag is now a no-op; remove it. To opt back into a boot-time connection ' +
+      'check, set API_CONNECTION_TEST=true instead.');
+    return;
+  }
+
+  // Boot-time connection test is now opt-in. By default, no network call is made at
+  // boot (env presence is still validated via validateEnvironment()); auth/network
+  // failures surface at the first tool call instead, avoiding a network round-trip
+  // and a boot-time failure mode on every spawn-per-call invocation.
+  if (process.env.API_CONNECTION_TEST !== 'true') {
+    logger.info('Skipping boot-time Confluence API connection test (default). ' +
+      'Set API_CONNECTION_TEST=true to opt into a fail-fast boot check.');
     return;
   }
 
   // Test the connection
   logger.info('Testing Confluence API connection...');
   const isConnected = await confluenceClient.testConnection();
-  
+
   if (!isConnected) {
     logger.error('Failed to connect to Confluence API');
     logger.error('Please check your CONFLUENCE_SITE_NAME, CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN');
     process.exit(1);
   }
-  
+
   logger.info('Confluence API connection established successfully');
 }
 
 const server = new Server(
   {
     name: 'confluence-cloud-mcp-server',
-    version: '1.0.0',
+    version: packageJson.version,
   },
   {
     capabilities: {
@@ -140,6 +158,12 @@ async function main() {
     
     const transport = new StdioServerTransport();
     await server.connect(transport);
+
+    // Exit cleanly when stdin closes (e.g. parent process pipe closed). The SDK
+    // does not exit automatically on EOF, which can leave orphaned processes
+    // under spawn-per-call usage.
+    process.stdin.on('end', () => process.exit(0));
+
     logger.info('Confluence Cloud MCP Server started successfully');
   } catch (error) {
     logger.error('Failed to start server:', error);

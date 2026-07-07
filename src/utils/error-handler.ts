@@ -12,9 +12,15 @@ export class ErrorHandler {
       
       switch (status) {
         case 401:
-          return new McpError(ErrorCode.InvalidRequest, `Authentication failed: ${message}`);
+          return new McpError(
+            ErrorCode.InvalidRequest,
+            `Authentication failed: ${message} (check CONFLUENCE_API_TOKEN / CONFLUENCE_EMAIL)`,
+          );
         case 403:
-          return new McpError(ErrorCode.InvalidRequest, `Access denied: ${message}`);
+          return new McpError(
+            ErrorCode.InvalidRequest,
+            `Access denied: ${message} (check CONFLUENCE_API_TOKEN / CONFLUENCE_EMAIL and account permissions)`,
+          );
         case 404:
           return new McpError(ErrorCode.InvalidRequest, `Resource not found: ${message}`);
         case 429:

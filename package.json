@@ -1,6 +1,6 @@
 {
   "name": "confluence-cloud-mcp-server",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Production-ready MCP server for Confluence Cloud API integration with AI assistants. Connect Claude, Cline, Cursor to Confluence with 11 comprehensive tools for page management, search, and collaboration.",
   "type": "module",
   "main": "dist/index.js",
@@ -39,7 +39,7 @@
     "url": "https://github.com/phuc-nt/confluence-cloud-mcp-server/issues"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20"
   },
   "files": [
     "dist/**/*",
@@ -48,7 +48,7 @@
     "INSTALL.md"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "1.17.4",
     "axios": "^1.7.0",
     "dotenv": "^16.4.0"
   },
